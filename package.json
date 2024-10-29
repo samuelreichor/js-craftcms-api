@@ -1,6 +1,6 @@
 {
   "name": "js-craft-api",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core of Craft CMS js-querybuilder",
   "private": false,
   "main": "./dist/index.js",
@@ -21,7 +21,8 @@
     "url": "git+https://github.com/samuelreichor/js-craft-api.git"
   },
   "keywords": [
-    "Craft CMS", "Querybuilder"
+    "Craft CMS",
+    "Querybuilder"
   ],
   "author": "Samuel Reichoer",
   "license": "MIT",
