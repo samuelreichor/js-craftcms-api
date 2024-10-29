@@ -1,0 +1,17 @@
+name: CI
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.7.0
+
+      - run: npm install --frozen-lockfile
+      - run: npm run ci
