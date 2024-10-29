@@ -1,7 +1,7 @@
 import { getPreviewToken } from './utils/helper';
 
 export type ElementType = 'addresses' | 'assets' | 'entries' | 'users';
-export type ExecutionMethods = 'all' | 'one'
+export type ExecutionMethods = 'all' | 'one';
 
 // Common query parameters shared by all element types, including allowed default methods
 export interface CommonQueryParams {
@@ -52,7 +52,11 @@ export interface UserQueryParams {
 }
 
 // Merge Queryparams for better dx
-export type MergedQueryParams = CommonQueryParams & AddressQueryParams & AssetQueryParams & EntryQueryParams & UserQueryParams;
+export type MergedQueryParams = CommonQueryParams &
+  AddressQueryParams &
+  AssetQueryParams &
+  EntryQueryParams &
+  UserQueryParams;
 
 // Common query methods shared by all element types, including allowed default methods
 export interface CommonQueryBuilder {
@@ -109,13 +113,10 @@ export interface QueryBuilderMap {
 }
 
 // Generic implementation of the function
-export function useCraftUrlBuilder<T extends ElementType>(
-  elementType: T,
-): QueryBuilderMap[T] {
-
+export function useCraftUrlBuilder<T extends ElementType>(elementType: T): QueryBuilderMap[T] {
   const defaultParams: MergedQueryParams = {
-    elementType: 'entries'
-  }
+    elementType: 'entries',
+  };
   let params: MergedQueryParams = defaultParams;
   params.elementType = elementType;
 
@@ -148,10 +149,10 @@ export function useCraftUrlBuilder<T extends ElementType>(
     buildBaseUrl(value) {
       if (value === 'all') {
         params.one = undefined;
-        params.all = '1'
+        params.all = '1';
       } else {
         params.one = '1';
-        params.all = undefined
+        params.all = undefined;
       }
 
       /* TODO: add more error handling */
@@ -162,10 +163,10 @@ export function useCraftUrlBuilder<T extends ElementType>(
       );
 
       const queryString = new URLSearchParams(queryParams).toString();
-      const previewToken = getPreviewToken()
-      return `/v1/api/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`
-    }
-  } as QueryBuilderMap[T];;
+      const previewToken = getPreviewToken();
+      return `/v1/api/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`;
+    },
+  } as QueryBuilderMap[T];
 
   // Element-specific methods based on elementType
   if (elementType === 'addresses') {
@@ -232,9 +233,7 @@ export function useCraftUrlBuilder<T extends ElementType>(
         return this;
       },
       uri(value) {
-        params.uri = Array.isArray(value)
-          ? value.filter((value) => value !== '').join('/')
-          : value;
+        params.uri = Array.isArray(value) ? value.filter((value) => value !== '').join('/') : value;
         return this;
       },
       section(value) {

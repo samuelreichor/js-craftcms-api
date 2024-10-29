@@ -4,23 +4,23 @@ import type { ElementType, ExecutionMethods } from '../index';
 
 describe('useQueryBuilder Tests', () => {
   describe('useQueryBuilder - CommonQueryBuilder', () => {
-    const arrOfExecutionTypes: ExecutionMethods[] = ['one', 'all']
-    const arrOfElementTypes: ElementType[] = ['addresses', 'assets', 'entries', 'users']
+    const arrOfExecutionTypes: ExecutionMethods[] = ['one', 'all'];
+    const arrOfElementTypes: ElementType[] = ['addresses', 'assets', 'entries', 'users'];
 
-    arrOfElementTypes.forEach(elementType => {
+    arrOfElementTypes.forEach((elementType) => {
       const queryBuilder = useCraftUrlBuilder(elementType);
       const baseQuery = queryBuilder
-      .id(1)
-      .limit(5)
-      .status('active')
-      .offset(2)
-      .orderBy('name')
-      .fields(['title', 'heroImage'])
-      
-      arrOfExecutionTypes.forEach(executionType => {
+        .id(1)
+        .limit(5)
+        .status('active')
+        .offset(2)
+        .orderBy('name')
+        .fields(['title', 'heroImage']);
+
+      arrOfExecutionTypes.forEach((executionType) => {
         it(`Should execute all commonQueryBuilder functions for ${elementType} with ${executionType}()`, async () => {
           const queryUrlOne = baseQuery.buildBaseUrl(executionType);
-    
+
           expect(queryUrlOne).toContain(
             `elementType=${elementType}&id=1&limit=5&status=active&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
           );
@@ -44,7 +44,7 @@ describe('useQueryBuilder Tests', () => {
         'elementType=addresses&addressLine1=123+Main+St&addressLine2=123&addressLine3=St.&locality=Springfield&fullName=John+Doe&one=1',
       );
     });
-  })
+  });
 
   describe('useQueryBuilder - AssetQueryBuilder', () => {
     it('Should execute all assetQueryBuilder functions', async () => {
@@ -105,7 +105,7 @@ describe('useQueryBuilder Tests', () => {
       // @ts-ignore: Is for testing
       const nullQueryUrl = queryBuilder.slug(null).buildBaseUrl('one');
       const emptyQueryUrl = queryBuilder.slug('').buildBaseUrl('one');
-       // @ts-ignore: Is for testing
+      // @ts-ignore: Is for testing
       const undefinedQueryUrl = queryBuilder.slug(undefined).buildBaseUrl('one');
 
       // Null value
@@ -148,4 +148,4 @@ describe('useQueryBuilder Tests', () => {
       }).toThrowError('Unsupported element type: invalidType');
     });
   });
-})
+});
