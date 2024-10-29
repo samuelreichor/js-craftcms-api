@@ -113,7 +113,7 @@ export interface QueryBuilderMap {
 }
 
 // Generic implementation of the function
-export function useCraftUrlBuilder<T extends ElementType>(elementType: T): QueryBuilderMap[T] {
+export function buildCraftQueryUrl<T extends ElementType>(elementType: T): QueryBuilderMap[T] {
   const defaultParams: MergedQueryParams = {
     elementType: 'entries',
   };

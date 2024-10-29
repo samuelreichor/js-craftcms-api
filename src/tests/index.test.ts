@@ -1,14 +1,14 @@
-import { useCraftUrlBuilder } from '../index';
+import { buildCraftQueryUrl } from '../index';
 import { describe, it, expect } from 'vitest';
 import type { ElementType, ExecutionMethods } from '../index';
 
-describe('useQueryBuilder Tests', () => {
-  describe('useQueryBuilder - CommonQueryBuilder', () => {
+describe('buildCraftQueryUrl Tests', () => {
+  describe('buildCraftQueryUrl - CommonQueryBuilder', () => {
     const arrOfExecutionTypes: ExecutionMethods[] = ['one', 'all'];
     const arrOfElementTypes: ElementType[] = ['addresses', 'assets', 'entries', 'users'];
 
     arrOfElementTypes.forEach((elementType) => {
-      const queryBuilder = useCraftUrlBuilder(elementType);
+      const queryBuilder = buildCraftQueryUrl(elementType);
       const baseQuery = queryBuilder
         .id(1)
         .limit(5)
@@ -29,9 +29,9 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - AddressQueryBuilder', () => {
+  describe('buildCraftQueryUrl - AddressQueryBuilder', () => {
     it('Should execute all addressQueryBuilder functions', async () => {
-      const queryBuilder = useCraftUrlBuilder('addresses');
+      const queryBuilder = buildCraftQueryUrl('addresses');
       const queryUrl = queryBuilder
         .addressLine1('123 Main St')
         .addressLine2('123')
@@ -46,9 +46,9 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - AssetQueryBuilder', () => {
+  describe('buildCraftQueryUrl - AssetQueryBuilder', () => {
     it('Should execute all assetQueryBuilder functions', async () => {
-      const queryBuilder = useCraftUrlBuilder('assets');
+      const queryBuilder = buildCraftQueryUrl('assets');
       const queryUrl = queryBuilder
         .volume('images')
         .kind('png')
@@ -63,9 +63,9 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - EntryQueryBuilder', () => {
+  describe('buildCraftQueryUrl - EntryQueryBuilder', () => {
     it('Should execute all entryQueryBuilder functions', async () => {
-      const queryBuilder = useCraftUrlBuilder('entries');
+      const queryBuilder = buildCraftQueryUrl('entries');
       const queryUrl = queryBuilder
         .slug('my-slug')
         .uri(['news', '2023'])
@@ -81,9 +81,9 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - UserQueryBuilder', () => {
+  describe('buildCraftQueryUrl - UserQueryBuilder', () => {
     it('Should execute all userQueryBuilder functions', async () => {
-      const queryBuilder = useCraftUrlBuilder('users');
+      const queryBuilder = buildCraftQueryUrl('users');
       const queryUrl = queryBuilder
         .group('admins')
         .groupId(1)
@@ -98,9 +98,9 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - Edge cases', () => {
+  describe('buildCraftQueryUrl - Edge cases', () => {
     it('Should handle null, empty strings, and undefined gracefully', async () => {
-      const queryBuilder = useCraftUrlBuilder('entries');
+      const queryBuilder = buildCraftQueryUrl('entries');
 
       // @ts-ignore: Is for testing
       const nullQueryUrl = queryBuilder.slug(null).buildBaseUrl('one');
@@ -117,7 +117,7 @@ describe('useQueryBuilder Tests', () => {
     });
 
     it('Should handle special characters in parameters correctly', async () => {
-      const queryBuilder = useCraftUrlBuilder('entries');
+      const queryBuilder = buildCraftQueryUrl('entries');
 
       const spacesQueryUrl = queryBuilder.slug('my slug with spaces').buildBaseUrl('one');
       const specialCharsQueryUrl = queryBuilder
@@ -133,7 +133,7 @@ describe('useQueryBuilder Tests', () => {
     });
 
     it('Should handle multiple values for the same parameter (arrays)', async () => {
-      const queryBuilder = useCraftUrlBuilder('entries');
+      const queryBuilder = buildCraftQueryUrl('entries');
       const queryUrl = queryBuilder.uri(['news', '2023', 'sports', '']).buildBaseUrl('one');
 
       // Ensure the query string correctly joins the array
@@ -141,10 +141,10 @@ describe('useQueryBuilder Tests', () => {
     });
   });
 
-  describe('useQueryBuilder - Invalid element type', () => {
+  describe('buildCraftQueryUrl - Invalid element type', () => {
     it('Should throw an error when an invalid elementType is provided', () => {
       expect(() => {
-        useCraftUrlBuilder('invalidType' as any);
+        buildCraftQueryUrl('invalidType' as any);
       }).toThrowError('Unsupported element type: invalidType');
     });
   });
