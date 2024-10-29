@@ -1,7 +1,7 @@
 {
-  "name": "npm-template-sr",
-  "version": "0.0.6",
-  "description": "This is a repo for quick starting npm packages.",
+  "name": "js-craft-api",
+  "version": "0.0.0",
+  "description": "Core of Craft CMS js-querybuilder",
   "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -18,17 +18,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samuelreichor/npm-template.git"
+    "url": "git+https://github.com/samuelreichor/js-craft-api.git"
   },
   "keywords": [
-    "template"
+    "Craft CMS", "Querybuilder"
   ],
   "author": "Samuel Reichoer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/samuelreichor/npm-template/issues"
+    "url": "https://github.com/samuelreichor/js-craft-api/issues"
   },
-  "homepage": "https://github.com/samuelreichor/npm-template#readme",
+  "homepage": "https://github.com/samuelreichor/js-craft-api#readme",
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "@types/node": "22.7.7",
