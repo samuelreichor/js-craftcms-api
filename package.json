@@ -1,6 +1,6 @@
 {
   "name": "js-craftcms-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Core of Craft CMS js-querybuilder",
   "private": false,
   "main": "./dist/index.js",

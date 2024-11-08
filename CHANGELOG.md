@@ -1,5 +1,11 @@
 # js-craftcms-api
 
+## 0.1.2
+
+### Patch Changes
+
+- 53fe569: Change api endpoint url from `/v1/api/customQuery` to `/v1/api/queryApi/customQuery`.
+
 ## 0.1.1
 
 ### Patch Changes
