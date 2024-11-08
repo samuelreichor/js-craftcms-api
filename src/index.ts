@@ -164,7 +164,7 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
 
       const queryString = new URLSearchParams(queryParams).toString();
       const previewToken = getPreviewToken();
-      return `/v1/api/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`;
+      return `/v1/api/queryApi/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`;
     },
   } as QueryBuilderMap[T];
 
