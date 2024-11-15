@@ -1,10 +1,10 @@
 import { buildCraftQueryUrl } from '../index';
 import { describe, it, expect } from 'vitest';
-import type { ElementType, ExecutionMethods } from '../index';
+import type { ElementType, ExecutionMethod } from '../index';
 
 describe('buildCraftQueryUrl Tests', () => {
   describe('buildCraftQueryUrl - CommonQueryBuilder', () => {
-    const arrOfExecutionTypes: ExecutionMethods[] = ['one', 'all'];
+    const arrOfExecutionTypes: ExecutionMethod[] = ['one', 'all'];
     const arrOfElementTypes: ElementType[] = ['addresses', 'assets', 'entries', 'users'];
 
     arrOfElementTypes.forEach((elementType) => {
@@ -12,7 +12,6 @@ describe('buildCraftQueryUrl Tests', () => {
       const baseQuery = queryBuilder
         .id(1)
         .limit(5)
-        .status('active')
         .offset(2)
         .orderBy('name')
         .fields(['title', 'heroImage']);
@@ -22,7 +21,7 @@ describe('buildCraftQueryUrl Tests', () => {
           const queryUrlOne = baseQuery.buildBaseUrl(executionType);
 
           expect(queryUrlOne).toContain(
-            `elementType=${elementType}&id=1&limit=5&status=active&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
+            `elementType=${elementType}&id=1&limit=5&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
           );
         });
       });
@@ -73,10 +72,11 @@ describe('buildCraftQueryUrl Tests', () => {
         .postDate('2023-01-01')
         .site('default')
         .siteId(1)
+        .status('live')
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=entries&slug=my-slug&uri=news%2F2023&section=news&postDate=2023-01-01&site=default&siteId=1&one=1',
+        'elementType=entries&slug=my-slug&uri=news%2F2023&section=news&postDate=2023-01-01&site=default&siteId=1&status=live&one=1',
       );
     });
   });
@@ -90,10 +90,11 @@ describe('buildCraftQueryUrl Tests', () => {
         .email('admin@test.com')
         .fullName('superuser')
         .hasPhoto(true)
+        .status('active')
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&one=1',
+        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&status=active&one=1',
       );
     });
   });

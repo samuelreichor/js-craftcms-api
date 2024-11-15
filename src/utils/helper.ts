@@ -5,3 +5,7 @@ export function getPreviewToken(): string | null {
 
   return urlParams.get('token');
 }
+
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};

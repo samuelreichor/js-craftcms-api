@@ -1,16 +1,22 @@
-import { getPreviewToken } from './utils/helper';
+import { getPreviewToken, type Prettify } from './utils/helper';
 
 export type ElementType = 'addresses' | 'assets' | 'entries' | 'users';
-export type ExecutionMethods = 'all' | 'one';
+export type ExecutionMethod = 'all' | 'one';
+type Operator = 'and' | 'not' | 'or';
+export type EntryStatusString = Prettify<'live' | 'pending' | 'expired' | 'disabled' | Operator>;
+export type EntryStatus = EntryStatusString | EntryStatusString[];
+export type UserStatusString = Prettify<
+  'active' | 'pending' | 'credentialed' | 'suspended' | 'locked' | 'inactive' | Operator
+>;
+export type UserStatus = UserStatusString | UserStatusString[];
 
 // Common query parameters shared by all element types, including allowed default methods
 export interface CommonQueryParams {
   elementType: ElementType;
   one?: string;
   all?: string;
-  id?: number;
+  id?: number | number[];
   limit?: number;
-  status?: string;
   offset?: number;
   orderBy?: string;
   fields?: string | string[];
@@ -37,36 +43,42 @@ export interface AssetQueryParams {
 export interface EntryQueryParams {
   slug?: string;
   uri?: string | string[];
-  section?: string;
+  section?: string | string[];
   postDate?: string;
   site?: string;
   siteId?: number;
+  status?: EntryStatus;
 }
 
 export interface UserQueryParams {
-  group?: string;
+  group?: string | string[];
   groupId?: number;
   email?: string;
   fullName?: string;
   hasPhoto?: boolean;
+  status?: UserStatus;
 }
 
 // Merge Queryparams for better dx
-export type MergedQueryParams = CommonQueryParams &
-  AddressQueryParams &
-  AssetQueryParams &
-  EntryQueryParams &
-  UserQueryParams;
+export type MergedQueryParams<T extends ElementType> = CommonQueryParams &
+  (T extends 'addresses'
+    ? AddressQueryParams
+    : T extends 'assets'
+      ? AssetQueryParams
+      : T extends 'entries'
+        ? EntryQueryParams
+        : T extends 'users'
+          ? UserQueryParams
+          : {});
 
 // Common query methods shared by all element types, including allowed default methods
 export interface CommonQueryBuilder {
-  id: (id: number) => this;
-  limit: (limit: number) => this;
-  status: (status: string) => this;
-  offset: (offset: number) => this;
-  orderBy: (orderBy: string) => this;
-  fields: (fields: string | string[]) => this;
-  buildBaseUrl: (value: ExecutionMethods) => string;
+  id: (value: number) => this;
+  limit: (value: number) => this;
+  offset: (value: number) => this;
+  orderBy: (value: string) => this;
+  fields: (value: string | string[]) => this;
+  buildBaseUrl: (value: ExecutionMethod) => string;
 }
 
 // Element-specific query builder methods
@@ -90,10 +102,11 @@ export interface AssetQueryBuilder extends CommonQueryBuilder {
 export interface EntryQueryBuilder extends CommonQueryBuilder {
   slug: (value: string) => this;
   uri: (value: string | string[]) => this;
-  section: (value: string) => this;
+  section: (value: string | string[]) => this;
   postDate: (value: string) => this;
   site: (value: string) => this;
   siteId: (value: number) => this;
+  status: (value: EntryStatus) => this;
 }
 
 export interface UserQueryBuilder extends CommonQueryBuilder {
@@ -102,6 +115,7 @@ export interface UserQueryBuilder extends CommonQueryBuilder {
   email: (value: string) => this;
   fullName: (value: string) => this;
   hasPhoto: (value: boolean) => this;
+  status: (value: UserStatus) => this;
 }
 
 // Mapping from ElementType to its specific QueryBuilder
@@ -112,38 +126,37 @@ export interface QueryBuilderMap {
   users: UserQueryBuilder;
 }
 
+export type QueryBuilder<T extends ElementType> = QueryBuilderMap[T];
+
 // Generic implementation of the function
-export function buildCraftQueryUrl<T extends ElementType>(elementType: T): QueryBuilderMap[T] {
-  const defaultParams: MergedQueryParams = {
+export function buildCraftQueryUrl<T extends ElementType>(elementType: T): QueryBuilder<T> {
+  const defaultParams: MergedQueryParams<T> = {
     elementType: 'entries',
-  };
-  let params: MergedQueryParams = defaultParams;
+  } as MergedQueryParams<T>;
+
+  let params: MergedQueryParams<T> = defaultParams;
   params.elementType = elementType;
 
   // Common methods shared by all element types, including allowed default methods
-  const commonBuilder = {
-    id(id) {
-      params.id = id;
+  const commonBuilder: CommonQueryBuilder = {
+    id(value) {
+      params.id = value;
       return this;
     },
-    limit(limit) {
-      params.limit = limit;
+    limit(value) {
+      params.limit = value;
       return this;
     },
-    status(status) {
-      params.status = status;
+    offset(value) {
+      params.offset = value;
       return this;
     },
-    offset(offset) {
-      params.offset = offset;
+    orderBy(value) {
+      params.orderBy = value;
       return this;
     },
-    orderBy(orderBy) {
-      params.orderBy = orderBy;
-      return this;
-    },
-    fields(fields) {
-      params.fields = fields;
+    fields(value) {
+      params.fields = value;
       return this;
     },
     buildBaseUrl(value) {
@@ -166,119 +179,134 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
       const previewToken = getPreviewToken();
       return `/v1/api/queryApi/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`;
     },
-  } as QueryBuilderMap[T];
+  };
 
   // Element-specific methods based on elementType
   if (elementType === 'addresses') {
+    const addressParams = params as CommonQueryParams & AddressQueryParams;
     return {
       ...commonBuilder,
       addressLine1(value) {
-        params.addressLine1 = value;
+        addressParams.addressLine1 = value;
         return this;
       },
       addressLine2(value) {
-        params.addressLine2 = value;
+        addressParams.addressLine2 = value;
         return this;
       },
       addressLine3(value) {
-        params.addressLine3 = value;
+        addressParams.addressLine3 = value;
         return this;
       },
       locality(value) {
-        params.locality = value;
+        addressParams.locality = value;
         return this;
       },
       organization(value) {
-        params.organization = value;
+        addressParams.organization = value;
         return this;
       },
       fullName(value) {
-        params.fullName = value;
+        addressParams.fullName = value;
         return this;
       },
-    } as QueryBuilderMap[T];
+    } as QueryBuilder<T>;
   }
 
   if (elementType === 'assets') {
+    const assetParams = params as CommonQueryParams & AssetQueryParams;
     return {
       ...commonBuilder,
       volume(value) {
-        params.volume = value;
+        assetParams.volume = value;
         return this;
       },
       kind(value) {
-        params.kind = value;
+        assetParams.kind = value;
         return this;
       },
       filename(value) {
-        params.filename = value;
+        assetParams.filename = value;
         return this;
       },
       site(value) {
-        params.site = value;
+        assetParams.site = value;
         return this;
       },
       siteId(value) {
-        params.siteId = value;
+        assetParams.siteId = value;
         return this;
       },
-    } as QueryBuilderMap[T];
+    } as QueryBuilder<T>;
   }
 
   if (elementType === 'entries') {
+    const entryParams = params as CommonQueryParams & EntryQueryParams;
     return {
       ...commonBuilder,
       slug(value) {
-        params.slug = value;
+        entryParams.slug = value;
         return this;
       },
       uri(value) {
-        params.uri = Array.isArray(value) ? value.filter((value) => value !== '').join('/') : value;
+        entryParams.uri = Array.isArray(value)
+          ? value.filter((value) => value !== '').join('/')
+          : value;
         return this;
       },
       section(value) {
-        params.section = value;
+        entryParams.section = value;
         return this;
       },
       postDate(value) {
-        params.postDate = value;
+        entryParams.postDate = value;
         return this;
       },
       site(value) {
-        params.site = value;
+        entryParams.site = value;
         return this;
       },
       siteId(value) {
-        params.siteId = value;
+        entryParams.siteId = value;
         return this;
       },
-    } as QueryBuilderMap[T];
+      status(value: EntryStatus) {
+        entryParams.status = value;
+        return this;
+      },
+    } as QueryBuilder<T>;
   }
 
   if (elementType === 'users') {
+    // Cast params to include address-specific parameters
+    const userParams = params as CommonQueryParams & UserQueryParams;
     return {
       ...commonBuilder,
       group(value) {
-        params.group = value;
+        userParams.group = value;
         return this;
       },
       groupId(value) {
-        params.groupId = value;
+        userParams.groupId = value;
         return this;
       },
       email(value) {
-        params.email = value;
+        userParams.email = value;
         return this;
       },
       fullName(value) {
-        params.fullName = value;
+        userParams.fullName = value;
         return this;
       },
       hasPhoto(value) {
-        params.hasPhoto = value;
+        userParams.hasPhoto = value;
         return this;
       },
-    } as QueryBuilderMap[T];
+      status(value: UserStatus) {
+        userParams.status = value;
+        return this;
+      },
+    } as QueryBuilder<T>;
   }
 
   throw new Error(`Unsupported element type: ${elementType}`);
