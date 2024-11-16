@@ -1,5 +1,13 @@
 # js-craftcms-api
 
+## 0.1.4
+
+### Patch Changes
+
+- d6620b3: Add support for level, sectionId and type for entry queries.
+  Make types of builder methods more dry.
+  Update Readme.
+
 ## 0.1.3
 
 ### Patch Changes
