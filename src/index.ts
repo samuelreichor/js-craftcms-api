@@ -2,20 +2,24 @@ import { getPreviewToken, type Prettify } from './utils/helper';
 
 export type ElementType = 'addresses' | 'assets' | 'entries' | 'users';
 export type ExecutionMethod = 'all' | 'one';
-type Operator = 'and' | 'not' | 'or';
-export type EntryStatusString = Prettify<'live' | 'pending' | 'expired' | 'disabled' | Operator>;
-export type EntryStatus = EntryStatusString | EntryStatusString[];
-export type UserStatusString = Prettify<
-  'active' | 'pending' | 'credentialed' | 'suspended' | 'locked' | 'inactive' | Operator
->;
-export type UserStatus = UserStatusString | UserStatusString[];
+export type Operator = 'and' | 'not' | 'or';
+export type EntryStatusString = 'live' | 'pending' | 'expired' | 'disabled';
+export type EntryStatus = EntryStatusString | (EntryStatusString | Operator)[];
+export type UserStatusString =
+  | 'active'
+  | 'pending'
+  | 'credentialed'
+  | 'suspended'
+  | 'locked'
+  | 'inactive';
+export type UserStatus = UserStatusString | (UserStatusString | Operator)[];
 
 // Common query parameters shared by all element types, including allowed default methods
 export interface CommonQueryParams {
   elementType: ElementType;
-  one?: string;
-  all?: string;
-  id?: number | number[];
+  one?: '1';
+  all?: '1';
+  id?: number | (number | Operator)[];
   limit?: number;
   offset?: number;
   orderBy?: string;
@@ -37,7 +41,7 @@ export interface AssetQueryParams {
   kind?: string;
   filename?: string;
   site?: string;
-  siteId?: number;
+  siteId?: number | (number | Operator)[];
 }
 
 export interface EntryQueryParams {
@@ -46,13 +50,13 @@ export interface EntryQueryParams {
   section?: string | string[];
   postDate?: string;
   site?: string;
-  siteId?: number;
+  siteId?: number | (number | Operator)[];
   status?: EntryStatus;
 }
 
 export interface UserQueryParams {
   group?: string | string[];
-  groupId?: number;
+  groupId?: number | (number | Operator)[];
   email?: string;
   fullName?: string;
   hasPhoto?: boolean;
@@ -73,49 +77,49 @@ export type MergedQueryParams<T extends ElementType> = CommonQueryParams &
 
 // Common query methods shared by all element types, including allowed default methods
 export interface CommonQueryBuilder {
-  id: (value: number) => this;
-  limit: (value: number) => this;
-  offset: (value: number) => this;
-  orderBy: (value: string) => this;
-  fields: (value: string | string[]) => this;
+  id: (value: CommonQueryParams['id']) => this;
+  limit: (value: CommonQueryParams['limit']) => this;
+  offset: (value: CommonQueryParams['offset']) => this;
+  orderBy: (value: CommonQueryParams['orderBy']) => this;
+  fields: (value: CommonQueryParams['fields']) => this;
   buildBaseUrl: (value: ExecutionMethod) => string;
 }
 
 // Element-specific query builder methods
 export interface AddressQueryBuilder extends CommonQueryBuilder {
-  addressLine1: (value: string) => this;
-  addressLine2: (value: string) => this;
-  addressLine3: (value: string) => this;
-  locality: (value: string) => this;
-  organization: (value: string) => this;
-  fullName: (value: string) => this;
+  addressLine1: (value: AddressQueryParams['addressLine1']) => this;
+  addressLine2: (value: AddressQueryParams['addressLine2']) => this;
+  addressLine3: (value: AddressQueryParams['addressLine3']) => this;
+  locality: (value: AddressQueryParams['locality']) => this;
+  organization: (value: AddressQueryParams['organization']) => this;
+  fullName: (value: AddressQueryParams['fullName']) => this;
 }
 
 export interface AssetQueryBuilder extends CommonQueryBuilder {
-  volume: (value: string) => this;
-  kind: (value: string) => this;
-  filename: (value: string) => this;
-  site: (value: string) => this;
-  siteId: (value: number) => this;
+  volume: (value: AssetQueryParams['volume']) => this;
+  kind: (value: AssetQueryParams['kind']) => this;
+  filename: (value: AssetQueryParams['filename']) => this;
+  site: (value: AssetQueryParams['site']) => this;
+  siteId: (value: AssetQueryParams['siteId']) => this;
 }
 
 export interface EntryQueryBuilder extends CommonQueryBuilder {
-  slug: (value: string) => this;
-  uri: (value: string | string[]) => this;
-  section: (value: string | string[]) => this;
-  postDate: (value: string) => this;
-  site: (value: string) => this;
-  siteId: (value: number) => this;
-  status: (value: EntryStatus) => this;
+  slug: (value: EntryQueryParams['slug']) => this;
+  uri: (value: EntryQueryParams['uri']) => this;
+  section: (value: EntryQueryParams['section']) => this;
+  postDate: (value: EntryQueryParams['postDate']) => this;
+  site: (value: EntryQueryParams['site']) => this;
+  siteId: (value: EntryQueryParams['siteId']) => this;
+  status: (value: EntryQueryParams['status']) => this;
 }
 
 export interface UserQueryBuilder extends CommonQueryBuilder {
-  group: (value: string) => this;
-  groupId: (value: number) => this;
-  email: (value: string) => this;
-  fullName: (value: string) => this;
-  hasPhoto: (value: boolean) => this;
-  status: (value: UserStatus) => this;
+  group: (value: UserQueryParams['group']) => this;
+  groupId: (value: UserQueryParams['groupId']) => this;
+  email: (value: UserQueryParams['email']) => this;
+  fullName: (value: UserQueryParams['fullName']) => this;
+  hasPhoto: (value: UserQueryParams['hasPhoto']) => this;
+  status: (value: UserQueryParams['status']) => this;
 }
 
 // Mapping from ElementType to its specific QueryBuilder

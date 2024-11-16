@@ -11,6 +11,7 @@ describe('buildCraftQueryUrl Tests', () => {
       const queryBuilder = buildCraftQueryUrl(elementType);
       const baseQuery = queryBuilder
         .id(1)
+        .id([12, 34, 'not'])
         .limit(5)
         .offset(2)
         .orderBy('name')
@@ -21,7 +22,7 @@ describe('buildCraftQueryUrl Tests', () => {
           const queryUrlOne = baseQuery.buildBaseUrl(executionType);
 
           expect(queryUrlOne).toContain(
-            `elementType=${elementType}&id=1&limit=5&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
+            `elementType=${elementType}&id=12%2C34%2Cnot&limit=5&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
           );
         });
       });
@@ -69,14 +70,16 @@ describe('buildCraftQueryUrl Tests', () => {
         .slug('my-slug')
         .uri(['news', '2023'])
         .section('news')
+        .section(['section', 'section2'])
         .postDate('2023-01-01')
         .site('default')
         .siteId(1)
         .status('live')
+        .status(['and', 'live', 'expired'])
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=entries&slug=my-slug&uri=news%2F2023&section=news&postDate=2023-01-01&site=default&siteId=1&status=live&one=1',
+        'elementType=entries&slug=my-slug&uri=news%2F2023&section=section%2Csection2&postDate=2023-01-01&site=default&siteId=1&status=and%2Clive%2Cexpired&one=1',
       );
     });
   });
@@ -91,10 +94,11 @@ describe('buildCraftQueryUrl Tests', () => {
         .fullName('superuser')
         .hasPhoto(true)
         .status('active')
+        .status(['or', 'locked', 'credentialed'])
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&status=active&one=1',
+        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&status=or%2Clocked%2Ccredentialed&one=1',
       );
     });
   });
