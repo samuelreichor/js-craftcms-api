@@ -2,7 +2,7 @@ import { getPreviewToken, type Prettify } from './utils/helper';
 
 export type ElementType = 'addresses' | 'assets' | 'entries' | 'users';
 export type ExecutionMethod = 'all' | 'one';
-export type Operator = 'and' | 'not' | 'or';
+export type Operator = 'and' | 'not' | 'or' | null;
 export type EntryStatusString = 'live' | 'pending' | 'expired' | 'disabled';
 export type EntryStatus = EntryStatusString | (EntryStatusString | Operator)[];
 export type UserStatusString =
@@ -52,6 +52,9 @@ export interface EntryQueryParams {
   site?: string;
   siteId?: number | (number | Operator)[];
   status?: EntryStatus;
+  level?: number | (number | Operator)[];
+  sectionId?: number | (number | Operator)[];
+  type?: string | string[];
 }
 
 export interface UserQueryParams {
@@ -111,6 +114,9 @@ export interface EntryQueryBuilder extends CommonQueryBuilder {
   site: (value: EntryQueryParams['site']) => this;
   siteId: (value: EntryQueryParams['siteId']) => this;
   status: (value: EntryQueryParams['status']) => this;
+  level: (value: EntryQueryParams['level']) => this;
+  sectionId: (value: EntryQueryParams['sectionId']) => this;
+  type: (value: EntryQueryParams['type']) => this;
 }
 
 export interface UserQueryBuilder extends CommonQueryBuilder {
@@ -276,6 +282,18 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
       },
       status(value: EntryStatus) {
         entryParams.status = value;
+        return this;
+      },
+      level(value) {
+        entryParams.level = value;
+        return this;
+      },
+      sectionId(value) {
+        entryParams.sectionId = value;
+        return this;
+      },
+      type(value) {
+        entryParams.type = value;
         return this;
       },
     } as QueryBuilder<T>;

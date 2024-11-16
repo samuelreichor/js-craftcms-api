@@ -76,10 +76,16 @@ describe('buildCraftQueryUrl Tests', () => {
         .siteId(1)
         .status('live')
         .status(['and', 'live', 'expired'])
+        .level(1)
+        .level([1, 'not'])
+        .type('default')
+        .type(['default', 'contact'])
+        .sectionId(4)
+        .sectionId([12, 'not'])
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=entries&slug=my-slug&uri=news%2F2023&section=section%2Csection2&postDate=2023-01-01&site=default&siteId=1&status=and%2Clive%2Cexpired&one=1',
+        'elementType=entries&slug=my-slug&uri=news%2F2023&section=section%2Csection2&postDate=2023-01-01&site=default&siteId=1&status=and%2Clive%2Cexpired&level=1%2Cnot&type=default%2Ccontact&sectionId=12%2Cnot&one=1',
       );
     });
   });
