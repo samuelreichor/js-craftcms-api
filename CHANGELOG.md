@@ -1,5 +1,11 @@
 # js-craftcms-api
 
+## 0.1.5
+
+### Patch Changes
+
+- db0c83e: Add support for search query
+
 ## 0.1.4
 
 ### Patch Changes
