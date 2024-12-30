@@ -15,14 +15,15 @@ describe('buildCraftQueryUrl Tests', () => {
         .limit(5)
         .offset(2)
         .orderBy('name')
-        .fields(['title', 'heroImage']);
+        .fields(['title', 'heroImage'])
+        .search('q');
 
       arrOfExecutionTypes.forEach((executionType) => {
         it(`Should execute all commonQueryBuilder functions for ${elementType} with ${executionType}()`, async () => {
           const queryUrlOne = baseQuery.buildBaseUrl(executionType);
 
           expect(queryUrlOne).toContain(
-            `elementType=${elementType}&id=12%2C34%2Cnot&limit=5&offset=2&orderBy=name&fields=title%2CheroImage&${executionType}=1`,
+            `elementType=${elementType}&id=12%2C34%2Cnot&limit=5&offset=2&orderBy=name&fields=title%2CheroImage&search=q&${executionType}=1`,
           );
         });
       });

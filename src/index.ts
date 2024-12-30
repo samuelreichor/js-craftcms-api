@@ -24,6 +24,7 @@ export interface CommonQueryParams {
   offset?: number;
   orderBy?: string;
   fields?: string | string[];
+  search?: string;
 }
 
 // Specific query parameters for each element type
@@ -85,6 +86,7 @@ export interface CommonQueryBuilder {
   offset: (value: CommonQueryParams['offset']) => this;
   orderBy: (value: CommonQueryParams['orderBy']) => this;
   fields: (value: CommonQueryParams['fields']) => this;
+  search: (value: CommonQueryParams['search']) => this;
   buildBaseUrl: (value: ExecutionMethod) => string;
 }
 
@@ -167,6 +169,10 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
     },
     fields(value) {
       params.fields = value;
+      return this;
+    },
+    search(value) {
+      params.search = value;
       return this;
     },
     buildBaseUrl(value) {
