@@ -1,5 +1,11 @@
 # js-craftcms-api
 
+## 0.1.6
+
+### Patch Changes
+
+- bf6c28d: Remove early days warning in readme
+
 ## 0.1.5
 
 ### Patch Changes
