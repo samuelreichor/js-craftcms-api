@@ -21,9 +21,6 @@
   </a>
 </p>
 
-> [!WARNING]  
-> This npm package is still in production and important features may change.
-
 ## Features
 
 - Query addresses, assets, entries and users.
