@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/samuelreichor/js-craftcms-api/issues"
   },
-  "homepage": "https://github.com/samuelreichor/js-craftcms-api#readme",
+  "homepage": "https://samuelreichor.at/libraries/js-craftcms-api",
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "@types/node": "22.7.7",

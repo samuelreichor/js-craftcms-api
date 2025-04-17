@@ -65,6 +65,7 @@ export interface UserQueryParams {
   fullName?: string;
   hasPhoto?: boolean;
   status?: UserStatus;
+  admin: 1;
 }
 
 // Merge Queryparams for better dx
@@ -128,6 +129,7 @@ export interface UserQueryBuilder extends CommonQueryBuilder {
   fullName: (value: UserQueryParams['fullName']) => this;
   hasPhoto: (value: UserQueryParams['hasPhoto']) => this;
   status: (value: UserQueryParams['status']) => this;
+  admin: () => this;
 }
 
 // Mapping from ElementType to its specific QueryBuilder
@@ -310,6 +312,10 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
     const userParams = params as CommonQueryParams & UserQueryParams;
     return {
       ...commonBuilder,
+      admin() {
+        userParams.admin = 1;
+        return this;
+      },
       group(value) {
         userParams.group = value;
         return this;

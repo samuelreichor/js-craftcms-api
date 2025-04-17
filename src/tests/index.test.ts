@@ -102,10 +102,11 @@ describe('buildCraftQueryUrl Tests', () => {
         .hasPhoto(true)
         .status('active')
         .status(['or', 'locked', 'credentialed'])
+        .admin()
         .buildBaseUrl('one');
 
       expect(queryUrl).toContain(
-        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&status=or%2Clocked%2Ccredentialed&one=1',
+        'elementType=users&group=admins&groupId=1&email=admin%40test.com&fullName=superuser&hasPhoto=true&status=or%2Clocked%2Ccredentialed&admin=1&one=1',
       );
     });
   });
