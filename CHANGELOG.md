@@ -1,5 +1,11 @@
 # js-craftcms-api
 
+## 0.1.7
+
+### Patch Changes
+
+- 4943b8d: Add support for admin() user query for Craft CMS solo users
+
 ## 0.1.6
 
 ### Patch Changes
