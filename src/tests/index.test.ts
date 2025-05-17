@@ -1,6 +1,7 @@
 import { buildCraftQueryUrl } from '../index';
 import { describe, it, expect } from 'vitest';
 import type { ElementType, ExecutionMethod } from '../index';
+import { getPreviewParams } from '../utils/helper';
 
 describe('buildCraftQueryUrl Tests', () => {
   describe('buildCraftQueryUrl - CommonQueryBuilder', () => {
@@ -31,7 +32,7 @@ describe('buildCraftQueryUrl Tests', () => {
   });
 
   describe('buildCraftQueryUrl - AddressQueryBuilder', () => {
-    it('Should execute all addressQueryBuilder functions', async () => {
+    it('Should execute all addressQueryBuilder functions', () => {
       const queryBuilder = buildCraftQueryUrl('addresses');
       const queryUrl = queryBuilder
         .addressLine1('123 Main St')
@@ -48,7 +49,7 @@ describe('buildCraftQueryUrl Tests', () => {
   });
 
   describe('buildCraftQueryUrl - AssetQueryBuilder', () => {
-    it('Should execute all assetQueryBuilder functions', async () => {
+    it('Should execute all assetQueryBuilder functions', () => {
       const queryBuilder = buildCraftQueryUrl('assets');
       const queryUrl = queryBuilder
         .volume('images')
@@ -65,7 +66,7 @@ describe('buildCraftQueryUrl Tests', () => {
   });
 
   describe('buildCraftQueryUrl - EntryQueryBuilder', () => {
-    it('Should execute all entryQueryBuilder functions', async () => {
+    it('Should execute all entryQueryBuilder functions', () => {
       const queryBuilder = buildCraftQueryUrl('entries');
       const queryUrl = queryBuilder
         .slug('my-slug')
@@ -92,7 +93,7 @@ describe('buildCraftQueryUrl Tests', () => {
   });
 
   describe('buildCraftQueryUrl - UserQueryBuilder', () => {
-    it('Should execute all userQueryBuilder functions', async () => {
+    it('Should execute all userQueryBuilder functions', () => {
       const queryBuilder = buildCraftQueryUrl('users');
       const queryUrl = queryBuilder
         .group('admins')
@@ -112,24 +113,20 @@ describe('buildCraftQueryUrl Tests', () => {
   });
 
   describe('buildCraftQueryUrl - Edge cases', () => {
-    it('Should handle null, empty strings, and undefined gracefully', async () => {
-      const queryBuilder = buildCraftQueryUrl('entries');
-
-      // @ts-ignore: Is for testing
-      const nullQueryUrl = queryBuilder.slug(null).buildBaseUrl('one');
-      const emptyQueryUrl = queryBuilder.slug('').buildBaseUrl('one');
-      // @ts-ignore: Is for testing
-      const undefinedQueryUrl = queryBuilder.slug(undefined).buildBaseUrl('one');
+    it('Should handle null, empty strings, and undefined gracefully', () => {
+      const nullQueryUrl = buildCraftQueryUrl('entries').status(null).buildBaseUrl('one');
+      const emptyQueryUrl = buildCraftQueryUrl('entries').slug('').buildBaseUrl('one');
+      const undefinedQueryUrl = buildCraftQueryUrl('entries').slug(undefined).buildBaseUrl('one');
 
       // Null value
-      expect(nullQueryUrl).toContain('elementType=entries&one=1'); // slug should not be in the query
+      expect(nullQueryUrl).toContain('elementType=entries&status=null&one=1'); // status should be in the query
       // Empty string
       expect(emptyQueryUrl).toContain('elementType=entries&one=1'); // slug should not be in the query
       // Undefined value
       expect(undefinedQueryUrl).toContain('elementType=entries&one=1'); // slug should not be in the query
     });
 
-    it('Should handle special characters in parameters correctly', async () => {
+    it('Should handle special characters in parameters correctly', () => {
       const queryBuilder = buildCraftQueryUrl('entries');
 
       const spacesQueryUrl = queryBuilder.slug('my slug with spaces').buildBaseUrl('one');
@@ -145,7 +142,7 @@ describe('buildCraftQueryUrl Tests', () => {
       );
     });
 
-    it('Should handle multiple values for the same parameter (arrays)', async () => {
+    it('Should handle multiple values for the same parameter (arrays)', () => {
       const queryBuilder = buildCraftQueryUrl('entries');
       const queryUrl = queryBuilder.uri(['news', '2023', 'sports', '']).buildBaseUrl('one');
 
@@ -159,6 +156,22 @@ describe('buildCraftQueryUrl Tests', () => {
       expect(() => {
         buildCraftQueryUrl('invalidType' as any);
       }).toThrowError('Unsupported element type: invalidType');
+    });
+  });
+
+  describe('getPreviewParams - Return preview tokens in query param format', () => {
+    it('Should filter out the correct preview tokens and return it as query params', () => {
+      const url =
+        'https://craft.com/v1/api/queryApi/customQuery/elementType=entries&section=home&one=1&x-craft-preview=abcd&token=abcdef&x-craft-live-preview=absdefg';
+      const previewParams = getPreviewParams(url);
+      expect(previewParams).toBe('x-craft-preview=abcd&token=abcdef&x-craft-live-preview=absdefg');
+    });
+
+    it('Should return empty string because no preview params are set', () => {
+      const url =
+        'https://craft.com/v1/api/queryApi/customQuery/elementType=entries&section=home&one=1';
+      const previewParams = getPreviewParams(url);
+      expect(previewParams).toBe('');
     });
   });
 });

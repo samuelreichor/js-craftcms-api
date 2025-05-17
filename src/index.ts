@@ -1,9 +1,9 @@
-import { getPreviewToken, type Prettify } from './utils/helper';
-
+import { getPreviewParams } from './utils/helper';
+export { getPreviewParams };
 export type ElementType = 'addresses' | 'assets' | 'entries' | 'users';
 export type ExecutionMethod = 'all' | 'one';
 export type Operator = 'and' | 'not' | 'or' | null;
-export type EntryStatusString = 'live' | 'pending' | 'expired' | 'disabled';
+export type EntryStatusString = 'live' | 'pending' | 'expired' | 'disabled' | null;
 export type EntryStatus = EntryStatusString | (EntryStatusString | Operator)[];
 export type UserStatusString =
   | 'active'
@@ -142,12 +142,26 @@ export interface QueryBuilderMap {
 
 export type QueryBuilder<T extends ElementType> = QueryBuilderMap[T];
 
+type Options = {
+  autoPreview?: boolean;
+  endpointUrl?: string;
+};
+
+const defaultOptions: Options = {
+  autoPreview: true,
+  endpointUrl: '/v1/api/queryApi/customQuery',
+};
+
 // Generic implementation of the function
-export function buildCraftQueryUrl<T extends ElementType>(elementType: T): QueryBuilder<T> {
+export function buildCraftQueryUrl<T extends ElementType>(
+  elementType: T,
+  options: Options = defaultOptions,
+): QueryBuilder<T> {
   const defaultParams: MergedQueryParams<T> = {
     elementType: 'entries',
   } as MergedQueryParams<T>;
 
+  options = { ...defaultOptions, ...options };
   let params: MergedQueryParams<T> = defaultParams;
   params.elementType = elementType;
 
@@ -189,13 +203,20 @@ export function buildCraftQueryUrl<T extends ElementType>(elementType: T): Query
       /* TODO: add more error handling */
       const queryParams = Object.fromEntries(
         Object.entries(params)
-          .filter(([_, value]) => value !== undefined && value !== null && value != '')
+          .filter(([_, value]) => value !== undefined && value != '')
           .map(([key, value]) => [key, String(value)]),
       );
 
       const queryString = new URLSearchParams(queryParams).toString();
-      const previewToken = getPreviewToken();
-      return `/v1/api/queryApi/customQuery?${queryString}${previewToken ? '&token=' + previewToken : ''}`;
+      let url = `${options.endpointUrl}?${queryString}`;
+
+      if (options.autoPreview) {
+        const previewTokens = getPreviewParams();
+        if (previewTokens) {
+          url += `&${previewTokens}`;
+        }
+      }
+      return url;
     },
   };
 

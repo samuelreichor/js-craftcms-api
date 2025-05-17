@@ -23,17 +23,17 @@
 ### Patch Changes
 
 - d6620b3: Add support for level, sectionId and type for entry queries.
-  Make types of builder methods more dry.
-  Update Readme.
+- Make types of builder methods more dry.
+- Update Readme.
 
 ## 0.1.3
 
 ### Patch Changes
 
 - 883cbba: Add support for arrays in id and section methods.
-  Remove status method from common builder and add custom status method to entry and user query.
-  Add Prettify typescript helper.
-  Fix some quirks in type definitions for the querybuilders.
+- Remove status method from common builder and add custom status method to entry and user query.
+- Add Prettify typescript helper.
+- Fix some quirks in type definitions for the querybuilders.
 
 ## 0.1.2
 
