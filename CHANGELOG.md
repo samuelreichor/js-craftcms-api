@@ -1,5 +1,12 @@
 # js-craftcms-api
 
+## 0.1.8
+
+### Patch Changes
+
+- 3c824b9: Add enhancements to preview mode and add options to buildCraftQueryUrl.
+  Adjust entry status type and remove filtering null out of the query.
+
 ## 0.1.7
 
 ### Patch Changes
