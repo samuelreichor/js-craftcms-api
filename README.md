@@ -21,27 +21,35 @@
   </a>
 </p>
 
-## Features
+> [!WARNING]
+> This package is no longer actively maintained. Please use the new **[`@query-api/js`](https://github.com/samuelreichor/query-api/tree/main/packages/js)** instead. It's designed to be a drop-in replacement.
 
-- Query addresses, assets, entries and users.
-- Easily add preview mode to your headless setup.
-- Built with typescript in mind.
-- You can easily build your own custom wrapper with that core logic.
+-----
 
-## Requirements
+## Why the Change?
 
-This plugin requires the [Craft Query API](https://github.com/samuelreichor/craft-query-api) installed on your Craft CMS instance.
+Hi there! If you've found this package, thanks so much for checking it out. I've recently re-evaluated my code architecture and decided to adopt a monorepo approach for all the JavaScript SDKs. This change allows for better maintainability and collaboration across related projects.
 
-## Documentation
+The package you're likely looking for is the new **[`@query-api/js`](https://github.com/samuelreichor/query-api/tree/main/packages/js)**. It's designed to seamlessly replace `js-craftcms-api`.
 
-Visit the [JS Craft CMS API](https://samuelreichor.at/libraries/js-craftcms-api) for all documentation, guides and developer resources.
+-----
 
-## Further Resources
+## Migration Guide
 
-- [Craft Query API](/libraries/craft-query-api): A Craft CMS Plugin, that powers this stuff.
-- [Vue Craft CMS](/libraries/vue-craftcms): A package to use the query builder in Vue.
-- [Nuxt Craft CMS](/libraries/nuxt-craftcms): A package to use the query builder in Nuxt.
+Migrating to the new package is straightforward:
 
-## Support
+1.  **Update Imports:** Replace all instances of `js-craftcms` in your import statements with `@query-api/js`.
+    ```typescript
+    // Before
+    import { someFeature } from 'js-craftcms';
+    // After
+    import { someFeature } from '@query-api/js';
+    ```
 
-If you encounter bugs or have feature requests, [please submit an issue](/../../issues/new). Your feedback helps improve the library!
+-----
+
+## Need Help?
+
+I apologize for any inconvenience this transition may cause. If you encounter any issues during the migration or have questions, please don't hesitate to reach out\!
+
+Happy coding!
