@@ -1,5 +1,11 @@
 # js-craftcms-api
 
+## 0.1.9
+
+### Patch Changes
+
+- a4a60a5: This package is no longer actively maintained. Please use the new **[`@query-api/js`](https://github.com/samuelreichor/query-api/tree/main/packages/js)** instead.
+
 ## 0.1.8
 
 ### Patch Changes
